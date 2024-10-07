@@ -4,7 +4,7 @@ import { ImageBackground, StyleSheet, Text, View, TouchableOpacity } from 'react
 import { RootStackParams } from './RootStackParams';
 import { StackNavigationProp } from '@react-navigation/stack';
 
-// Define the Course interface
+
 interface Course {
   dishName: string;
   description: string;
@@ -17,10 +17,16 @@ type HomeScreenProp = StackNavigationProp<RootStackParams, 'Home'>;
 export default function HomeScreen() {
   
   const navigation = useNavigation<HomeScreenProp>();
-  const [courses] = useState<Course[]>([]);
+  const [courses] = useState<Course[]>([]); 
 
+  
   const handleViewMenu = () => {
     navigation.navigate('Menu', { courses });
+  };
+
+ 
+  const handleAddCourse = () => {
+    navigation.navigate('Courses', { courses });
   };
 
   return (
@@ -32,6 +38,7 @@ export default function HomeScreen() {
         <Text style={styles.text}>Christoffel's Menu</Text>
 
         <View style={styles.buttonContainer}>
+          
           <TouchableOpacity
             style={styles.button}
             onPress={handleViewMenu} 
@@ -41,9 +48,10 @@ export default function HomeScreen() {
 
           <View style={styles.separator} />
 
+          
           <TouchableOpacity
             style={styles.button}
-            onPress={() => navigation.navigate('Courses')}
+            onPress={handleAddCourse} 
           >
             <Text style={styles.buttonText}>Add Course</Text>
           </TouchableOpacity>
@@ -91,4 +99,4 @@ const styles = StyleSheet.create({
   separator: {
     height: 20,
   },
-}); 
+});

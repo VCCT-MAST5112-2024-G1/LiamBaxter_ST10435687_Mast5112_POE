@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Text, View, TextInput, Button, ImageBackground, StyleSheet, TouchableOpacity, Modal } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useRoute } from '@react-navigation/native';
 import { RootStackParams } from './RootStackParams';
 import { StackNavigationProp } from '@react-navigation/stack';
 
@@ -13,8 +13,11 @@ interface Course {
 
 export default function CoursesScreen() {
   const navigation = useNavigation<StackNavigationProp<RootStackParams>>();
+  const route = useRoute();
+  
+  
+  const { courses: existingCourses } = route.params as { courses: Course[] };
 
-  const [courses, setCourses] = useState<Course[]>([]);
   const [dishName, setDishName] = useState('');
   const [description, setDescription] = useState('');
   const [courseType, setCourseType] = useState('Starter');
@@ -35,10 +38,12 @@ export default function CoursesScreen() {
     };
 
     
-    setCourses(prevCourses => [...prevCourses, newCourse]);
+    const updatedCourses = [...existingCourses, newCourse];
 
-    navigation.navigate('Menu', { courses: [...courses, newCourse] });
+    
+    navigation.navigate('Menu', { courses: updatedCourses });
 
+    
     setDishName('');
     setDescription('');
     setCourseType('Starter');
@@ -97,29 +102,42 @@ export default function CoursesScreen() {
         </Modal>
 
         <TextInput
-          placeholder="What is the price of this dish?"
+          placeholder="What is the price of this course?"
           style={styles.input}
           value={price}
           onChangeText={setPrice}
           keyboardType="numeric"
         />
 
-        <Button title="ADD" onPress={handleAddCourse} />
+        <View style={styles.addButton}>
+          <Button title="Add Course" onPress={handleAddCourse} />
+        </View>
       </View>
     </ImageBackground>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
   background: {
     flex: 1,
     width: '100%',
+  },
+  container: {
+    flexGrow: 1,
+    alignItems: 'center',
     justifyContent: 'center',
+  },
+  buttonContainer: {
+    flexDirection: 'row',
+    width: '100%',
+    justifyContent: 'space-between',
+    padding: 10,
+  },
+  buttonLeft: {
+    width: '30%',
+  },
+  buttonRight: {
+    width: '30%',
   },
   title: {
     fontSize: 24,
@@ -129,49 +147,30 @@ const styles = StyleSheet.create({
   input: {
     width: '80%',
     padding: 10,
-    marginVertical: 5,
+    marginVertical: 10,
     backgroundColor: '#fff',
     borderRadius: 5,
   },
   dropdown: {
     width: '80%',
     padding: 10,
-    marginVertical: 5,
+    marginVertical: 10,
     backgroundColor: '#fff',
     borderRadius: 5,
-    alignItems: 'center',
   },
   dropdownText: {
-    color: '#000',
+    fontSize: 16,
   },
   modalView: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    marginTop: 'auto',
+    marginBottom: 'auto',
+    backgroundColor: '#fff',
+    padding: 20,
   },
   modalItem: {
-    padding: 15,
-    backgroundColor: '#fff',
-    width: '80%',
-    alignItems: 'center',
-    marginVertical: 5,
-    borderRadius: 5,
+    padding: 10,
   },
-  buttonContainer: {
-    width: '100%',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    paddingHorizontal: 20,
-  },
-  buttonLeft: {
-    width: '20%',
-  },
-  buttonRight: {
-    width: '20%',
+  addButton: {
+    marginTop: 20,
   },
 });

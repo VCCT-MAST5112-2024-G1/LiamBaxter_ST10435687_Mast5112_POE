@@ -15,7 +15,7 @@ export default function MenuScreen() {
   const route = useRoute();
   const navigation = useNavigation<StackNavigationProp<RootStackParams>>();
 
-  const { courses } = route.params as { courses: Course[] };
+  const { courses } = route.params as { courses: Course[] }; 
 
   const totalCourses = courses.length;
   const totalPrice = courses.reduce((sum, course) => sum + course.price, 0);
@@ -56,21 +56,14 @@ export default function MenuScreen() {
             <Button title="Back" onPress={() => navigation.navigate('Home')} />
           </View>
           <View style={styles.buttonRight}>
-            <Button title="Add Course" onPress={() => navigation.navigate('Courses')} />
+            <Button title="Add Course" onPress={() => navigation.navigate('Courses', { courses })} />
           </View>
         </View>
 
         <View style={styles.textContainer}>
-          <Text style={styles.summary}>
-            Total Courses: {totalCourses}
-          </Text>
-          <Text style={styles.summary}>
-            Total Price: R{totalPrice.toFixed(2)}
-          </Text>
-          <Text style={styles.summary}>
-            Average Price: R{averagePrice.toFixed(2)}
-          </Text>
-
+          <Text style={styles.summary}>Total Courses: {totalCourses}</Text>
+          <Text style={styles.summary}>Total Price: R{totalPrice.toFixed(2)}</Text>
+          <Text style={styles.summary}>Average Price: R{averagePrice.toFixed(2)}</Text>
 
           {Object.keys(typePriceMap).map((type) => (
             <Text key={type} style={styles.summary}>
@@ -78,7 +71,7 @@ export default function MenuScreen() {
             </Text>
           ))}
         </View>
-        <View style={styles.separator}/>
+        <View style={styles.separator} />
         <FlatList
           data={courses}
           renderItem={renderItem}

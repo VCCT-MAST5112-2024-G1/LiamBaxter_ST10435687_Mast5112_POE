@@ -1,7 +1,7 @@
 export type RootStackParams = {
     Home: undefined;  
     Menu: { courses: Course[] };  
-    Courses: undefined;  
+    Courses: { courses: Course[] };  
     Filter: undefined;  
 };
 
