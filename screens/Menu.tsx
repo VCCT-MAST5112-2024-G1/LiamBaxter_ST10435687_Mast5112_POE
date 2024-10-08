@@ -18,8 +18,7 @@ export default function MenuScreen() {
   const { courses } = route.params as { courses: Course[] };
 
   const totalCourses = courses.length;
-  const totalPrice = courses.reduce((sum, course) => sum + course.price, 0);
-  const averagePrice = totalCourses > 0 ? totalPrice / totalCourses : 0;
+  
 
   const typePriceMap: { [key: string]: { count: number; total: number; average: number } } = {
     Starter: { count: 0, total: 0, average: 0 },
@@ -60,12 +59,10 @@ export default function MenuScreen() {
       </View>
       <View style={styles.textContainer}>
         <Text style={styles.summary}>Total Courses: {totalCourses}</Text>
-        <Text style={styles.summary}>Total Price: R{totalPrice.toFixed(2)}</Text>
-        <Text style={styles.summary}>Average Price: R{averagePrice.toFixed(2)}</Text>
 
         {Object.keys(typePriceMap).map((type) => (
           <Text key={type} style={styles.summary}>
-            {type}: {typePriceMap[type].count} items, Total: R{typePriceMap[type].total.toFixed(2)}, Average: R{typePriceMap[type].average.toFixed(2)}
+            {type}: {typePriceMap[type].count} items, Average: R{typePriceMap[type].average.toFixed(2)}
           </Text>
         ))}
       </View>
@@ -85,7 +82,9 @@ export default function MenuScreen() {
     </ImageBackground>
   );
 }
-
+//OpenAI's ChatGPT and Stack Overflow was used for error handling throughout the entire application.
+//OpenAI. 2024. Chat-GPT (Version 3.5). [Large language model]. Available at: https://chat.openai.com/c/13495dfa-784b-4354-9ab3-69c4d81f7b29 Accessed: 5 Oct 2024].
+//Stack Overflow. 2024. {Online} Available at: - https://stackoverflow.com/ [Accessed on 26 September 2024].
 const styles = StyleSheet.create({
   container: {
     flexGrow: 1,
@@ -128,9 +127,10 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   summary: {
-    fontSize: 16,
+    fontSize: 20,
     fontWeight: 'bold',
     marginVertical: 5,
+    paddingLeft:1,
   },
   textContainer: {
     width: '100%',
