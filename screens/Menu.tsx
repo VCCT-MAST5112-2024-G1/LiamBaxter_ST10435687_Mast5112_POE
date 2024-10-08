@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, FlatList, StyleSheet, Button, ImageBackground, ScrollView } from 'react-native';
+import { View, Text, FlatList, StyleSheet, TouchableOpacity, ImageBackground } from 'react-native';
 import { useRoute, useNavigation } from '@react-navigation/native';
 import { RootStackParams } from './RootStackParams';
 import { StackNavigationProp } from '@react-navigation/stack';
@@ -15,7 +15,7 @@ export default function MenuScreen() {
   const route = useRoute();
   const navigation = useNavigation<StackNavigationProp<RootStackParams>>();
 
-  const { courses } = route.params as { courses: Course[] }; 
+  const { courses } = route.params as { courses: Course[] };
 
   const totalCourses = courses.length;
   const totalPrice = courses.reduce((sum, course) => sum + course.price, 0);
@@ -48,37 +48,40 @@ export default function MenuScreen() {
     </View>
   );
 
+  const ListHeader = () => (
+    <View style={styles.headerContainer}>
+      <View style={styles.buttonContainer}>
+        <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Home')}>
+          <Text style={styles.buttonText}>Filter</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Courses', { courses })}>
+          <Text style={styles.buttonText}>Add Course</Text>
+        </TouchableOpacity>
+      </View>
+      <View style={styles.textContainer}>
+        <Text style={styles.summary}>Total Courses: {totalCourses}</Text>
+        <Text style={styles.summary}>Total Price: R{totalPrice.toFixed(2)}</Text>
+        <Text style={styles.summary}>Average Price: R{averagePrice.toFixed(2)}</Text>
+
+        {Object.keys(typePriceMap).map((type) => (
+          <Text key={type} style={styles.summary}>
+            {type}: {typePriceMap[type].count} items, Total: R{typePriceMap[type].total.toFixed(2)}, Average: R{typePriceMap[type].average.toFixed(2)}
+          </Text>
+        ))}
+      </View>
+      <View style={styles.separator} />
+    </View>
+  );
+
   return (
     <ImageBackground source={require('../img/menu.jpg')} style={styles.background}>
-      <ScrollView contentContainerStyle={styles.container}>
-        <View style={styles.buttonContainer}>
-          <View style={styles.buttonLeft}>
-            <Button title="Back" onPress={() => navigation.navigate('Home')} />
-          </View>
-          <View style={styles.buttonRight}>
-            <Button title="Add Course" onPress={() => navigation.navigate('Courses', { courses })} />
-          </View>
-        </View>
-
-        <View style={styles.textContainer}>
-          <Text style={styles.summary}>Total Courses: {totalCourses}</Text>
-          <Text style={styles.summary}>Total Price: R{totalPrice.toFixed(2)}</Text>
-          <Text style={styles.summary}>Average Price: R{averagePrice.toFixed(2)}</Text>
-
-          {Object.keys(typePriceMap).map((type) => (
-            <Text key={type} style={styles.summary}>
-              {type}: {typePriceMap[type].count} items, Total: R{typePriceMap[type].total.toFixed(2)}, Average: R{typePriceMap[type].average.toFixed(2)}
-            </Text>
-          ))}
-        </View>
-        <View style={styles.separator} />
-        <FlatList
-          data={courses}
-          renderItem={renderItem}
-          keyExtractor={(item) => item.dishName}
-          style={styles.list}
-        />
-      </ScrollView>
+      <FlatList
+        data={courses}
+        renderItem={renderItem}
+        keyExtractor={(item) => item.dishName}
+        ListHeaderComponent={ListHeader}
+        style={styles.list}
+      />
     </ImageBackground>
   );
 }
@@ -96,7 +99,6 @@ const styles = StyleSheet.create({
   list: {
     width: '100%',
     padding: 20,
-    marginTop: 40,
   },
   courseItem: {
     backgroundColor: '#fff',
@@ -113,33 +115,34 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     padding: 10,
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
   },
-  buttonLeft: {
+  button: {
     width: '30%',
     backgroundColor: '#5C0000',
+    alignItems: 'center',
+    paddingVertical: 10,
+    borderRadius: 5,
   },
-  buttonRight: {
-    width: '30%',
-    backgroundColor: '#5C0000',
+  buttonText: {
+    color: '#fff',
+    fontWeight: 'bold',
   },
   summary: {
     fontSize: 16,
     fontWeight: 'bold',
     marginVertical: 5,
-    marginTop: 5,
   },
   textContainer: {
     width: '100%',
     textAlign: 'left',
-    marginTop: 50,
+    marginTop: 20,
     marginLeft: 10,
   },
   separator: {
     height: 10,
     backgroundColor: 'black',
+  },
+  headerContainer: {
+    marginBottom: 10,
   },
 });

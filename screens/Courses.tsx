@@ -15,7 +15,6 @@ export default function CoursesScreen() {
   const navigation = useNavigation<StackNavigationProp<RootStackParams>>();
   const route = useRoute();
   
-  
   const { courses: existingCourses } = route.params as { courses: Course[] };
 
   const [dishName, setDishName] = useState('');
@@ -37,13 +36,10 @@ export default function CoursesScreen() {
       price: Number(price),
     };
 
-    
     const updatedCourses = [...existingCourses, newCourse];
 
-    
     navigation.navigate('Menu', { courses: updatedCourses });
 
-    
     setDishName('');
     setDescription('');
     setCourseType('Starter');
@@ -53,13 +49,11 @@ export default function CoursesScreen() {
   return (
     <ImageBackground source={require('../img/form.jpg')} style={styles.background}>
       <View style={styles.container}>
+       
         <View style={styles.buttonContainer}>
-          <View style={styles.buttonLeft}>
-            <Button title="Back" onPress={() => navigation.navigate('Home')} />
-          </View>
-          <View style={styles.buttonRight}>
-            <Button title="Filter" onPress={() => navigation.navigate('Filter')} />
-          </View>
+          <TouchableOpacity style={[styles.button, styles.buttonSmall]} onPress={() => navigation.navigate('Filter')}>
+            <Text style={styles.buttonText}>Filter</Text>
+          </TouchableOpacity>
         </View>
 
         <Text style={styles.title}>Add a Course</Text>
@@ -109,9 +103,9 @@ export default function CoursesScreen() {
           keyboardType="numeric"
         />
 
-        <View style={styles.addButton}>
-          <Button title="Add Course" onPress={handleAddCourse} />
-        </View>
+        <TouchableOpacity style={[styles.button, styles.addButton]} onPress={handleAddCourse}>
+          <Text style={styles.buttonText}>Add Course</Text>
+        </TouchableOpacity>
       </View>
     </ImageBackground>
   );
@@ -126,18 +120,31 @@ const styles = StyleSheet.create({
     flexGrow: 1,
     alignItems: 'center',
     justifyContent: 'center',
+    marginTop: 60, 
   },
   buttonContainer: {
+    position: 'absolute', 
+    top: 10, 
+    left: 0,
+    right: 0,
     flexDirection: 'row',
-    width: '100%',
     justifyContent: 'space-between',
-    padding: 10,
+    paddingHorizontal: 20,
   },
-  buttonLeft: {
-    width: '30%',
+  button: {
+    backgroundColor: '#5C0000',
+    paddingVertical: 10, 
+    paddingHorizontal: 15,
+    borderRadius: 7,
+    alignItems: 'center',
   },
-  buttonRight: {
-    width: '30%',
+  buttonText: {
+    color: 'white',
+    fontSize: 16, 
+    fontWeight: 'bold',
+  },
+  buttonSmall: {
+    width: '30%', 
   },
   title: {
     fontSize: 24,
@@ -171,6 +178,7 @@ const styles = StyleSheet.create({
     padding: 10,
   },
   addButton: {
+    width: '60%',
     marginTop: 20,
   },
 });
