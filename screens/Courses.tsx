@@ -49,12 +49,6 @@ export default function CoursesScreen() {
   return (
     <ImageBackground source={require('../img/form.jpg')} style={styles.background}>
       <View style={styles.container}>
-       
-        <View style={styles.buttonContainer}>
-          <TouchableOpacity style={[styles.button, styles.buttonSmall]} onPress={() => navigation.navigate('Filter')}>
-            <Text style={styles.buttonText}>Filter</Text>
-          </TouchableOpacity>
-        </View>
 
         <Text style={styles.title}>Add a Course</Text>
 

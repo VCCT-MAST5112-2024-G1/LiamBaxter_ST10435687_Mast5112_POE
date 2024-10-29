@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { View, Text, FlatList, StyleSheet, TouchableOpacity, ImageBackground } from 'react-native';
 import { useRoute, useNavigation } from '@react-navigation/native';
@@ -11,14 +12,15 @@ interface Course {
   price: number;
 }
 
+// other imports...
+
 export default function MenuScreen() {
   const route = useRoute();
   const navigation = useNavigation<StackNavigationProp<RootStackParams>>();
 
-  const { courses } = route.params as { courses: Course[] };
+  const { courses } = (route.params as { courses: Course[] }) || { courses: [] };
 
   const totalCourses = courses.length;
-  
 
   const typePriceMap: { [key: string]: { count: number; total: number; average: number } } = {
     Starter: { count: 0, total: 0, average: 0 },
@@ -49,8 +51,9 @@ export default function MenuScreen() {
 
   const ListHeader = () => (
     <View style={styles.headerContainer}>
+      <Text style={styles.heading}>Christoffel's Menu</Text>
       <View style={styles.buttonContainer}>
-        <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Home')}>
+        <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Filter', { courses })}>
           <Text style={styles.buttonText}>Filter</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Courses', { courses })}>
@@ -82,9 +85,7 @@ export default function MenuScreen() {
     </ImageBackground>
   );
 }
-//OpenAI's ChatGPT and Stack Overflow was used for error handling throughout the entire application.
-//OpenAI. 2024. Chat-GPT (Version 3.5). [Large language model]. Available at: https://chat.openai.com/c/13495dfa-784b-4354-9ab3-69c4d81f7b29 Accessed: 5 Oct 2024].
-//Stack Overflow. 2024. {Online} Available at: - https://stackoverflow.com/ [Accessed on 26 September 2024].
+
 const styles = StyleSheet.create({
   container: {
     flexGrow: 1,
@@ -109,6 +110,13 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     fontSize: 18,
   },
+  heading: {
+    fontSize: 26,
+    fontWeight: 'bold',
+    textAlign: 'center',
+    color: '#5C0000',
+    marginBottom: 20,
+  },
   buttonContainer: {
     width: '100%',
     flexDirection: 'row',
@@ -130,7 +138,7 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: 'bold',
     marginVertical: 5,
-    paddingLeft:1,
+    paddingLeft: 1,
   },
   textContainer: {
     width: '100%',
