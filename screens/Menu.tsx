@@ -1,6 +1,14 @@
-
-import React from 'react';
-import { View, Text, FlatList, StyleSheet, TouchableOpacity, ImageBackground } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { 
+  View, 
+  Text, 
+  FlatList, 
+  StyleSheet, 
+  TouchableOpacity, 
+  ImageBackground, 
+  Modal, 
+  Button 
+} from 'react-native';
 import { useRoute, useNavigation } from '@react-navigation/native';
 import { RootStackParams } from './RootStackParams';
 import { StackNavigationProp } from '@react-navigation/stack';
@@ -12,15 +20,26 @@ interface Course {
   price: number;
 }
 
-// other imports...
-
 export default function MenuScreen() {
   const route = useRoute();
   const navigation = useNavigation<StackNavigationProp<RootStackParams>>();
 
   const { courses } = (route.params as { courses: Course[] }) || { courses: [] };
 
-  const totalCourses = courses.length;
+  const [modalVisible, setModalVisible] = useState(false);
+  const [selectedCourse, setSelectedCourse] = useState<string | null>(null);
+
+
+const [localCourses, setLocalCourses] = useState(courses);
+
+useEffect(() => {
+  if (courses && courses.length > 0) {
+    setLocalCourses(courses); 
+  }
+}, [courses]); 
+
+
+  const totalCourses = localCourses.length;
 
   const typePriceMap: { [key: string]: { count: number; total: number; average: number } } = {
     Starter: { count: 0, total: 0, average: 0 },
@@ -28,7 +47,7 @@ export default function MenuScreen() {
     Dessert: { count: 0, total: 0, average: 0 },
   };
 
-  courses.forEach((course) => {
+  localCourses.forEach((course) => {
     if (typePriceMap[course.courseType]) {
       typePriceMap[course.courseType].count += 1;
       typePriceMap[course.courseType].total += course.price;
@@ -39,6 +58,17 @@ export default function MenuScreen() {
     const count = typePriceMap[type].count;
     typePriceMap[type].average = count > 0 ? typePriceMap[type].total / count : 0;
   });
+
+  // Area to handle deleting of courses
+  const handleDelete = () => {
+    if (selectedCourse) {
+      console.log("Deleting course:", selectedCourse);
+      const updatedCourses = localCourses.filter((course) => course.dishName !== selectedCourse);  
+      setLocalCourses(updatedCourses); 
+      setSelectedCourse(null); 
+      setModalVisible(false); // Closes modal
+    }
+  };
 
   const renderItem = ({ item }: { item: Course }) => (
     <View style={styles.courseItem}>
@@ -53,16 +83,18 @@ export default function MenuScreen() {
     <View style={styles.headerContainer}>
       <Text style={styles.heading}>Christoffel's Menu</Text>
       <View style={styles.buttonContainer}>
-        <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Filter', { courses })}>
+        <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Filter', { courses: localCourses })}>
           <Text style={styles.buttonText}>Filter</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Courses', { courses })}>
+        <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Courses', { courses: localCourses })}>
           <Text style={styles.buttonText}>Add Course</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.button} onPress={() => setModalVisible(true)}>
+          <Text style={styles.buttonText}>Delete Course</Text>
         </TouchableOpacity>
       </View>
       <View style={styles.textContainer}>
         <Text style={styles.summary}>Total Courses: {totalCourses}</Text>
-
         {Object.keys(typePriceMap).map((type) => (
           <Text key={type} style={styles.summary}>
             {type}: {typePriceMap[type].count} items, Average: R{typePriceMap[type].average.toFixed(2)}
@@ -76,12 +108,32 @@ export default function MenuScreen() {
   return (
     <ImageBackground source={require('../img/menu.jpg')} style={styles.background}>
       <FlatList
-        data={courses}
+        data={localCourses}  
         renderItem={renderItem}
         keyExtractor={(item) => item.dishName}
         ListHeaderComponent={ListHeader}
         style={styles.list}
       />
+      
+      
+      <Modal visible={modalVisible} transparent animationType="slide">
+        <View style={styles.modalContainer}>
+          <Text style={styles.modalHeading}>Select a Course to Delete</Text>
+          {localCourses.map((course) => (
+            <TouchableOpacity
+              key={course.dishName}
+              style={[styles.modalItem, selectedCourse === course.dishName && styles.selectedItem]}
+              onPress={() => setSelectedCourse(course.dishName)}
+            >
+              <Text>{course.dishName}</Text>
+            </TouchableOpacity>
+          ))}
+          <View style={styles.modalActions}>
+            <Button title="Cancel" onPress={() => setModalVisible(false)} />
+            <Button title="Delete" onPress={handleDelete} />
+          </View>
+        </View>
+      </Modal>
     </ImageBackground>
   );
 }
@@ -152,5 +204,31 @@ const styles = StyleSheet.create({
   },
   headerContainer: {
     marginBottom: 10,
+  },
+  modalContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    padding: 20,
+  },
+  modalHeading: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: '#fff',
+    marginBottom: 15,
+  },
+  modalItem: {
+    backgroundColor: '#fff',
+    padding: 10,
+    marginVertical: 5,
+    borderRadius: 5,
+  },
+  selectedItem: {
+    backgroundColor: '#f0c0c0',
+  },
+  modalActions: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginTop: 20,
   },
 });
