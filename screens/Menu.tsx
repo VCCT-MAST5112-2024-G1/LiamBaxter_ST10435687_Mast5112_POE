@@ -78,8 +78,10 @@ useEffect(() => {
       <Text>Price: R{item.price.toFixed(2)}</Text>
     </View>
   );
-
-  const ListHeader = () => (
+// Different websites such as StackOverflow and SheCodes hav i fen used for majoruty of the error handling but i forgot to add on other website that was used for error handling so i will reference it here:
+//OpenAI. 2024. Chat-GPT (Version 3.5). [Large language model]. Available at: https://chatgpt.com/c/5380b3af-ae3e-4241-8761-258a070b3942?oai-dm=1  [Accessed: 21 November 2024].
+  
+const ListHeader = () => (
     <View style={styles.headerContainer}>
       <Text style={styles.heading}>Christoffel's Menu</Text>
       <View style={styles.buttonContainer}>
