@@ -69,7 +69,7 @@ useEffect(() => {
       setModalVisible(false); // Closes modal
     }
   };
-
+  //How the course item is displayed
   const renderItem = ({ item }: { item: Course }) => (
     <View style={styles.courseItem}>
       <Text style={styles.dishName}>{item.dishName}</Text>

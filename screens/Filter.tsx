@@ -22,7 +22,7 @@ export default function FilterScreen() {
     const filteredCourses = selectedType
         ? courses.filter((course) => course.courseType === selectedType)
         : courses;
-
+// if satement for filtering through array
     const handleFilter = (type: string) => {
         if (selectedType === type) {
             setSelectedType(null); 

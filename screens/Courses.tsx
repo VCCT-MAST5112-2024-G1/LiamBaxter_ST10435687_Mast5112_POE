@@ -22,7 +22,7 @@ export default function CoursesScreen() {
   const [courseType, setCourseType] = useState('Starter');
   const [price, setPrice] = useState<string>('');
   const [modalVisible, setModalVisible] = useState(false);
-
+// Error handling section
   const handleAddCourse = () => {
     if (!dishName || !description || !courseType || price === '') {
       alert('Please fill in all fields.');
@@ -45,7 +45,7 @@ export default function CoursesScreen() {
     setCourseType('Starter');
     setPrice('');
   };
-
+// Entire form
   return (
     <ImageBackground source={require('../img/form.jpg')} style={styles.background}>
       <View style={styles.container}>
